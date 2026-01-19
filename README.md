@@ -1,151 +1,89 @@
-# Vision-Based Game HUD Extraction — Experiments & Prototypes
+# Vision-Based Game HUD Extraction — Experiments
 
-This repository contains **multiple experimental scripts and prototypes** exploring how to reliably extract structured data from **gambling / slot game images and videos** using OpenAI vision models.
+This repository is a **sandbox of experiments**, not a single finished product.
 
-The core problem being explored is:
-> *How to accurately, reliably, and scalably extract game HUD information (credit, bet, win, free spins, feature state, etc.) from screenshots and video frames.*
+The goal across all scripts is simple:
+> Extract structured HUD data (game name, credit, bet, win, free spins, feature state) from **images and videos** using vision models.
 
----
-
-## What this repo is (high level)
-
-This is **not a single finished product**.  
-It is a **collection of experiments** that test different approaches along the same pipeline:
-
-**Video / Image → Vision Model → Structured Output**
-
-Each script answers a slightly different question about:
-- accuracy
-- reliability
-- scalability
-- output format
-- cost
-- ease of integration
+Everything here explores *how* to do that reliably and at scale.
 
 ---
 
-## Categories of experiments
+## What the scripts are testing
 
-### 1. Image-based extraction
-Scripts that send:
-- a **single image**
-- or **multiple images in one request**
+### Image vs video
+- Some scripts work on **single images**
+- Others extract **frames from videos** and process those
 
-to the model and extract HUD fields.
-
-**Why:**  
-To validate prompt quality, schema correctness, and model consistency before touching video or scale.
+Reason: real data comes from video, but images are faster to test prompts and accuracy.
 
 ---
 
-### 2. Loose output vs strict output
-Two output strategies are tested:
-- **Loose text / CSV-like output** (parsed after)
-- **Strict JSON schema output** (model forced into a fixed structure)
+### Loose output vs strict output
+- Some scripts allow free-form / CSV-like text
+- Others force **strict JSON schemas**
 
-**Why:**  
-To compare speed and flexibility vs downstream safety.  
-Strict schemas are more production-safe; loose output is faster for exploration.
+Reason: loose output is fast for testing, strict output is safer for production.
 
 ---
 
-### 3. Image scripts vs video scripts
-- Image scripts work on screenshots or extracted frames.
-- Video scripts:
-  - extract frames at intervals
-  - batch frames
-  - send them to the model
-  - aggregate results into tables (often Excel).
+### Direct scripts vs API
+- Standalone scripts = fast iteration
+- Flask API = reusable service
 
-**Why:**  
-Most real-world data comes as video streams, not still images.
+Reason: prove the logic first, wrap it later.
 
 ---
 
-### 4. Immediate processing vs batch processing
-Two execution styles are tested:
-- **Immediate inference**
-  - extract frames → call model → get results
-- **Batch preparation**
-  - extract frames → generate JSONL → submit to OpenAI Batch API
+### Immediate processing vs batch jobs
+- Immediate: extract → infer → return results
+- Batch: extract → JSONL → OpenAI Batch API
 
-**Why:**  
-Immediate processing is ideal for debugging and small jobs.  
-Batch processing is required for **scale, async execution, and cost control**.
+Reason: batch is needed for scale, async runs, and cost control.
 
 ---
 
-### 5. Direct scripts vs API wrapper
-Some logic exists as:
-- **standalone scripts** (hardcoded paths, fast iteration)
-- **Flask API endpoints** wrapping the same logic
-
-**Why:**  
-Scripts are faster to experiment with.  
-APIs are needed once this becomes a reusable service.
-
----
-
-### 6. Model & SDK experiments
-Different scripts test:
+### Model & SDK variations
 - `gpt-4o` vs `gpt-4o-mini`
-- strict JSON schema enforcement
-- typed parsing (e.g. Pydantic)
-- token counting and cost estimation
+- Different request sizes
+- Typed parsing vs manual parsing
 
-**Why:**  
-To understand reliability, cost, and developer ergonomics before locking choices.
+Reason: find the best balance between accuracy, cost, and reliability.
 
 ---
 
-## Why there are many scripts
+## Why there are many files
 
-Each script exists to answer **one specific question**, such as:
-- Can the model reliably detect “feature mode”?
-- Does strict schema reduce hallucinations?
-- How many frames per request is optimal?
-- Is batch processing worth the complexity?
-- Can video be processed end-to-end without manual cleanup?
+Each script answers **one question**:
+- Does strict schema reduce errors?
+- How many frames per request works best?
+- Is batch worth the overhead?
+- Can video be processed end-to-end cleanly?
 
-Nothing here is accidental duplication — it’s **deliberate exploration**.
+They are experiments by design.
 
 ---
 
 ## Current state
 
-- Extraction logic works.
-- Schema-based outputs are stable.
-- Video → frame → structured data pipelines are validated.
-- Batch and non-batch paths are proven.
+- HUD extraction works
+- Video → frames → structured output is proven
+- Batch and non-batch flows both validated
 
-What’s missing is **consolidation**, not capability.
-
----
-
-## Potential upgrades / next steps
-
-- Merge experiments into **one clean pipeline**:
-  - configurable (image / video)
-  - configurable (immediate / batch)
-- Introduce:
-  - confidence scores
-  - frame-to-frame consistency checks
-- Add:
-  - async workers
-  - queue-based ingestion
-- Normalize outputs into:
-  - database-ready schema
-  - streaming-compatible format
-- Replace Flask with FastAPI if productionized.
-- Add monitoring for:
-  - failed frames
-  - ambiguous detections
-  - cost per minute of video
+What’s missing is **consolidation**, not functionality.
 
 ---
 
-## TL;DR
+## Next logical upgrades
 
-This repo is a **research & validation sandbox** for vision-based HUD extraction.  
-Multiple scripts exist to **test approaches, not because of poor structure**.  
-The winning patterns are already clear — the next step is consolidation into a single, clean system.
+- Merge into one configurable pipeline
+- Add confidence scoring and validation
+- Add async workers / queues
+- Store results in a DB instead of files
+- Production-grade API (FastAPI)
+
+---
+
+**TL;DR**  
+This repo exists to *prove approaches*, not to look clean.  
+The clean version comes after the experiments.
