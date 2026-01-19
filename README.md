@@ -1,4 +1,4 @@
-# Vision-Based Game HUD Extraction — Experiments
+# Vision-Based Game HUD Extraction - Experiments
 
 This repository is a **sandbox of experiments**, not a single finished product.
 
