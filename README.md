@@ -5,7 +5,7 @@ This repository is a **sandbox of experiments**, not a single finished product.
 The goal across all scripts is simple:
 > Extract structured HUD data (game name, credit, bet, win, free spins, feature state) from **images and videos** using vision models.
 
-Everything here explores *how* to do that reliably and at scale.
+Everything here explores *how* to do that using LLMs.
 
 ---
 
